@@ -9,6 +9,7 @@ from init import db
 from util import config, server_info
 from util.v2_jobs import v2_config_change
 from v2ray.models import Inbound
+from util import session_util
 
 v2ray_bp = Blueprint('v2ray', __name__, url_prefix='/v2ray')
 
@@ -25,7 +26,8 @@ def index():
 @v2ray_bp.route('/accounts/', methods=['GET'])
 def accounts():
     from init import common_context
-    inbs = Inbound.query.all()
+    user = session_util.is_login()
+    inbs = Inbound.query.filter_by(uid=user.id)
     inbs = '[' + ','.join([json.dumps(inb.to_json(), ensure_ascii=False) for inb in inbs]) + ']'
     return render_template('v2ray/accounts.html', **common_context, inbounds=inbs)
 

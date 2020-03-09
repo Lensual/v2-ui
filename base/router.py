@@ -24,6 +24,8 @@ def login():
     password = request.form['password']
     user = User.query.filter_by(username=username, password=password).first()
     if user is not None:
+        if user.enable = False:
+            return jsonify(Msg(False, gettext('user disabled')))
         session_util.login_success(user)
         return jsonify(Msg(True, gettext('login success')))
     return jsonify(Msg(False, gettext('username or password wrong')))
