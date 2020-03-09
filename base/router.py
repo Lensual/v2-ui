@@ -24,6 +24,8 @@ def login():
     password = request.form['password']
     user = User.query.filter_by(username=username, password=password).first()
     if user is not None:
+        if not user.enable:
+            return jsonify(Msg(False, gettext('user disabled')))
         session_util.login_success(user)
         return jsonify(Msg(True, gettext('login success')))
     return jsonify(Msg(False, gettext('username or password wrong')))
@@ -44,7 +46,7 @@ def robots():
 
 def init_user():
     if User.query.count() == 0:
-        db.session.add(User('admin', 'admin'))
+        db.session.add(User('admin', 'admin', 'admin'))
         db.session.commit()
 
 

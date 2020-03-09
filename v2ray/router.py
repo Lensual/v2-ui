@@ -9,6 +9,7 @@ from init import db
 from util import config, server_info
 from util.v2_jobs import v2_config_change
 from v2ray.models import Inbound
+from util import session_util
 
 v2ray_bp = Blueprint('v2ray', __name__, url_prefix='/v2ray')
 
@@ -25,7 +26,8 @@ def index():
 @v2ray_bp.route('/accounts/', methods=['GET'])
 def accounts():
     from init import common_context
-    inbs = Inbound.query.all()
+    user = session_util.get_user()
+    inbs = Inbound.query.filter_by(uid=user['id'])
     inbs = '[' + ','.join([json.dumps(inb.to_json(), ensure_ascii=False) for inb in inbs]) + ']'
     return render_template('v2ray/accounts.html', **common_context, inbounds=inbs)
 
@@ -58,13 +60,15 @@ def donate():
 
 @v2ray_bp.route('/inbounds', methods=['GET'])
 def inbounds():
-    return jsonify([inb.to_json() for inb in Inbound.query.all()])
+    user = session_util.get_user()
+    return jsonify([inb.to_json() for inb in Inbound.query.filter_by(uid=user['id'])])
 
 
 @v2ray_bp.route('inbound/add', methods=['POST'])
 @v2_config_change
 def add_inbound():
     port = int(request.form['port'])
+    user = session_util.get_user()
     if Inbound.query.filter_by(port=port).count() > 0:
         return jsonify(Msg(False, gettext('port exists')))
     listen = request.form['listen']
@@ -73,7 +77,7 @@ def add_inbound():
     stream_settings = request.form['stream_settings']
     sniffing = request.form['sniffing']
     remark = request.form['remark']
-    inbound = Inbound(port, listen, protocol, settings, stream_settings, sniffing, remark)
+    inbound = Inbound(user['id'], port, listen, protocol, settings, stream_settings, sniffing, remark)
     db.session.add(inbound)
     db.session.commit()
     return jsonify(

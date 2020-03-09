@@ -88,7 +88,8 @@ def is_ajax():
 @app.before_request
 def before():
     from base.models import Msg
-    if not session_util.is_login():
+    user = session_util.get_user()
+    if not user or not user['enable']:
         for bp in need_login_bps:
             if request.path.startswith(bp.url_prefix):
                 if is_ajax():

@@ -8,6 +8,7 @@ from init import db
 class Inbound(db.Model):
     __tablename__ = 'inbound'
     id = Column(Integer, primary_key=True, autoincrement=True)
+    uid = Column(Integer, nullable=False)
     port = Column(Integer, unique=True, nullable=False)
     listen = Column(String(50), default='0.0.0.0')
     protocol = Column(String(50), nullable=False)
@@ -20,8 +21,9 @@ class Inbound(db.Model):
     down = Column(BIGINT, default=0, nullable=False)
     enable = Column(Boolean, default=True, nullable=False)
 
-    def __init__(self, port=None, listen=None, protocol=None,
+    def __init__(self, uid, port=None, listen=None, protocol=None,
                  settings=None, stream_settings=None, sniffing=None, remark=None):
+        self.uid = uid
         self.port = port
         self.listen = listen
         self.protocol = protocol
@@ -34,9 +36,11 @@ class Inbound(db.Model):
         self.down = 0
         self.enable = True
 
+
     def to_json(self):
         return {
             'id': self.id,
+            'uid': self.uid,
             'port': self.port,
             'listen': self.listen,
             'protocol': self.protocol,

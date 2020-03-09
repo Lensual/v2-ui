@@ -13,15 +13,22 @@ class User(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
+    role = Column(String, nullable=False)
+    enable = Column(Boolean, nullable=False)
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, role, enable=True):
         self.username = username
         self.password = password
+        self.role = role
+        self.enable = enable
 
     def to_json(self):
         return {
+            'id': self.id,
             'username': self.username,
             'password': self.password,
+            'role': self.role,
+            'enable': self.enable,
         }
 
 
