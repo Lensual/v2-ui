@@ -46,7 +46,7 @@ def robots():
 
 def init_user():
     if User.query.count() == 0:
-        db.session.add(User('admin', 'admin'))
+        db.session.add(User('admin', 'admin', 'admin'))
         db.session.commit()
 
 
