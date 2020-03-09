@@ -1,5 +1,8 @@
 from flask import session
 
+def get_user():
+    if is_login():
+        return session['LOGIN_USER']
 
 def is_login():
     return 'LOGIN_USER' in session

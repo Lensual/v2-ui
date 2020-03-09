@@ -67,6 +67,7 @@ def inbounds():
 @v2_config_change
 def add_inbound():
     port = int(request.form['port'])
+    user = session_util.get_user()
     if Inbound.query.filter_by(port=port).count() > 0:
         return jsonify(Msg(False, gettext('port exists')))
     listen = request.form['listen']
@@ -75,7 +76,7 @@ def add_inbound():
     stream_settings = request.form['stream_settings']
     sniffing = request.form['sniffing']
     remark = request.form['remark']
-    inbound = Inbound(port, listen, protocol, settings, stream_settings, sniffing, remark)
+    inbound = Inbound(port, user.id, listen, protocol, settings, stream_settings, sniffing, remark)
     db.session.add(inbound)
     db.session.commit()
     return jsonify(
