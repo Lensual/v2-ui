@@ -22,7 +22,7 @@ class Inbound(db.Model):
     enable = Column(Boolean, default=True, nullable=False)
 
     def __init__(self, uid, port=None, listen=None, protocol=None,
-                 settings=None, stream_settings=None, sniffing=None, remark=None, ):
+                 settings=None, stream_settings=None, sniffing=None, remark=None):
         self.uid = uid
         self.port = port
         self.listen = listen
