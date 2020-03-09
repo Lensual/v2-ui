@@ -76,7 +76,7 @@ def add_inbound():
     stream_settings = request.form['stream_settings']
     sniffing = request.form['sniffing']
     remark = request.form['remark']
-    inbound = Inbound(port, user['id'], listen, protocol, settings, stream_settings, sniffing, remark)
+    inbound = Inbound(user['id'], port, listen, protocol, settings, stream_settings, sniffing, remark)
     db.session.add(inbound)
     db.session.commit()
     return jsonify(
