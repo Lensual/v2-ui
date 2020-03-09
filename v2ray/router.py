@@ -26,8 +26,8 @@ def index():
 @v2ray_bp.route('/accounts/', methods=['GET'])
 def accounts():
     from init import common_context
-    user = session_util.is_login()
-    inbs = Inbound.query.filter_by(uid=user.id)
+    user = session_util.get_user()
+    inbs = Inbound.query.filter_by(uid=user['id'])
     inbs = '[' + ','.join([json.dumps(inb.to_json(), ensure_ascii=False) for inb in inbs]) + ']'
     return render_template('v2ray/accounts.html', **common_context, inbounds=inbs)
 
