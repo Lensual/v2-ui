@@ -60,7 +60,8 @@ def donate():
 
 @v2ray_bp.route('/inbounds', methods=['GET'])
 def inbounds():
-    return jsonify([inb.to_json() for inb in Inbound.query.all()])
+    user = session_util.get_user()
+    return jsonify([inb.to_json() for inb in Inbound.query.filter_by(uid=user['id'])])
 
 
 @v2ray_bp.route('inbound/add', methods=['POST'])
